@@ -11,7 +11,7 @@
 # otherwise, the script will just print out an example of who it matches.
 #
 #   so send the message like this:
-# 	    python secret_santa.py -s
+#       python secret_santa.py -s
 #       python secret_santa.py --send
 #
 #   finally, as much as i appreciate the sentiment (<3) please don't send me any
