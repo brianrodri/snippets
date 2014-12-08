@@ -2,7 +2,7 @@
 #
 # script: secret_santa.py
 # author: Brian Rodriguez (`thatbrod@gmail.com' for any questions!)
-# last-modified: 6 December 2014
+# last-modified: 8 December 2014
 #
 #   fun little script that auto-magically pairs the given participants together
 # randomly with an optional set of restrictions.
