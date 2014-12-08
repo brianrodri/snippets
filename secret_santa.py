@@ -11,7 +11,7 @@
 # otherwise, the script will just print out an example of who it matches.
 #
 #   so send the message like this:
-#       python secret_santa.py -s
+# 	    python secret_santa.py -s
 #       python secret_santa.py --send
 #
 #   finally, as much as i appreciate the sentiment (<3) please don't send me any
@@ -19,39 +19,34 @@
 #
 
 email_details = {
-# details needed to connect to an e-mail client (here i use gmail, you can use
+# details needed to connect to an e-mail server (here i use gmail, you can use
 # w/e you want!)
 "Host"     : "smtp.gmail.com:587",
 "Username" : "thatbrod",
-"Password" : "************************************************************",
+"Password" : "****************",
 
 # details sent out to the secret santas
 "Subject" : "Secret Santa 2014~",
 "Message" : '''HO HO HO! This year, you are ${SANTEE}'s Secret Santa! The \
-spending limit is $50, and we plan on exchanging gifts Christmas night! Have \
-fun!! :)''',
+spending limit is $50, and we plan on exchanging gifts Christmas night! \
+Have fun and stay sneaky!!''',
 # note: ${SANTEE} will be replaced w/ the santee's name!
 }
-
-# the script is kinda dumb, so each participant needs to have a UNIQUE name. it
-# won't check for you and will give you broken results if you force it to run :/
-# sorry if this is a problem, if anyone actually cares enough to e-mail me about
-# it, i'll whip up a fix m'kay?
 participants = [
-	{ "Name" : "Brile", "E-Mail" : "brile@mint.oh" },
-	{ "Name" : "Binni", "E-Mail" : "binni@whoa.yo" },
-	{ "Name" : "Boope", "E-Mail" : "boope@neat.qt" },
-	{ "Name" : "Boogy", "E-Mail" : "boogy@what.up" },
-	{ "Name" : "Brian", "E-Mail" : "brian@cool.og" },
+    { "Name" : "Bippo", "E-Mail" : "bippo@neat.za" }, #idx 0
+    { "Name" : "Brian", "E-Mail" : "brian@cool.ze" }, #idx 1
+    { "Name" : "Binne", "E-Mail" : "binne@mint.zi" }, #idx 2
+    { "Name" : "Boogy", "E-Mail" : "boogy@whoa.zo" }, #idx 3
+    { "Name" : "Bavin", "E-Mail" : "bavin@word.zu" }, #idx 4
+#   {                                              }, #idx ...
 ]
-
 bad_pairs = {
-	("Santa", "Santee"),
+	("Santa's IDX", "Santee's IDX"),
 
-	("Brile", "Boogy"), # Brile got Boogy something last year!
+	(0, 2), # Bippo and Binne are happily married! We don't need to tell them
+	(2, 0), # to get each other something!
 
-	("Boope", "Binni"), # happily married, we don't need to tell them to get
-	("Binni", "Boope"), # each other presents :P
+	(0, 1), # Bippo got Brian something last year!
 }
 # don't worry about people getting paired with themselves, the script already
 # knows that's not allowed!
@@ -60,68 +55,64 @@ bad_pairs = {
 
 # Don't change anything after this unless you know what you're doing! And most
 # important of all: HAPPY HOLIDAYS!! o<(:-D)
-
-from collections import defaultdict
-from itertools import product, chain
-from random import choice
-from smtplib import SMTP
-from sys import argv, exit
-
-
+import collections
+import itertools
+import random
+import smtplib
+import sys
 
 def bijections_of(collection, relations):
-	mapping = defaultdict(list)
+	mapping = collections.defaultdict(list)
 	bijections = []
 
 	for lhs, rhs in relations:
 		if lhs in set(collection) and rhs in set(collection):
 			mapping[lhs].append(rhs)
 
-	if len(mapping) != len(collection) or len(set(chain.from_iterable(mapping.values()))) != len(collection):
+	if len(mapping) != len(collection) or len(set(itertools.chain.from_iterable(mapping.values()))) != len(collection):
 		return []
 
-	for rhs_permutation in (list(rhs_values) for rhs_values in product(*mapping.values())):
+	for rhs_permutation in (list(rhs_values) for rhs_values in itertools.product(*mapping.values())):
 		if len(set(rhs_permutation)) == len(collection):
 			bijections.append(list(zip(mapping.keys(), rhs_permutation)))
 
 	return bijections
 
+def id_to_name((santa_id, santee_id)):
+	return (participants[santa_id]["Name"], participants[santee_id]["Name"])
+
 def send_email(santa, santee, server):
-	santa_details = next(details for details in participants if details["Name"] == santa)
+	santa_details = participants[santa]
+	santee_details = participants[santee]
 
 	msg = "\r\n".join([
 		"From: Santa <santa@northpole.com>",
-		"To: " + santa_details["Name"] + "<" + santa_details["E-Mail"] + ">",
+		"To: " + santa_details["Name"] + " <" + santa_details["E-Mail"] + ">",
 		"Subject: " + email_details["Subject"],
 		"",
-		email_details["Message"].replace("${SANTEE}", santee)
-		])
+		email_details["Message"].replace("${SANTEE}", santee_details["Name"])
+	])
 
 	server.sendmail("santa@northpole.com", santa_details["E-Mail"], msg)
 
 
 
-names = [ person["Name"] for person in participants ]
-good_pairs = list( set(product(names, names)) - set(zip(names, names)) - bad_pairs )
-potential_matches = bijections_of(names, good_pairs)
-
+idx = range(len(participants))
+good_pairs = list( set(itertools.product(idx, idx)) - set(zip(idx, idx)) - bad_pairs )
+potential_matches = bijections_of(idx, good_pairs)
 if not potential_matches:
 	print("the set of `bad_pairs' is too restrictive! No matches are possible!")
-	exit()
+	sys.exit()
+matches = random.choice(potential_matches)
 
-matches = choice(potential_matches)
-
-if len(argv) > 1 and (argv[1] == "-s" or argv[1] == "--send"):
-	server = SMTP(email_details["Host"])
+if len(sys.argv) > 1 and (sys.argv[1] == "-s" or sys.argv[1] == "--send"):
+	server = smtplib.SMTP(email_details["Host"])
 	server.starttls()
 	server.login(email_details["Username"], email_details["Password"])
-
 	for santa, santee in sorted(matches):
-		print(santa + " is now being sent their e-mail...")
+		print(participants[santa]["Name"] + " is now being sent their e-mail...")
 		send_email(santa, santee, server)
-
 	server.quit()
 	print("done! happy gift hunting!")
-
 else:
-	print(matches)
+	print(map(id_to_name, matches))
