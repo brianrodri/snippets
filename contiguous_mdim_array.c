@@ -10,29 +10,26 @@ returned base pointer. Implementation further below.
 
 WARNING: For an [M][N]...[Z] array 'arr', the elements do NOT live in the range:
 	[ 'arr' , 'arr + M*N*...*Z' )
-	^-inclusive                 ^-exclusive
-
-but, instead, in the range:
-	[ '&arr[0][0]...[0]' , '&arr[M-1][N-1]...[Z-1]' ]
-	^-inclusive                                     ^-inclusive
+So you must use the & operator to find the range like so:
+	[ '&arr[0][0]...[0]' , '&arr[M-1][N-1]...[Z-1] +1' )
 */
 void * malloc_mdim_arr(size_t * dim_sizes, size_t m, size_t elm_size, size_t elm_align);
 
 
 
 int
-main(int argc, char ** argv)
+main()
 {
 	int i, j, k;
 	size_t dims[3] = { 3, 8, 4 };
 	double *** arr = malloc_mdim_arr(dims, 3, sizeof(double), __alignof__(double));
-	printf("%x\n", (void *) arr);
+	printf("%p\n", (void *) arr);
 
 	for (i = 0; i < 3; ++i) {
 		for (j = 0; j < 8; ++j) {
 			for (k = 0; k < 4; ++k) {
 				arr[i][j][k] = i*j*0.5 - j*k*7.75 + k*i*3.25;
-				printf("arr[%d][%d][%d]/%x = %f\n", i, j, k, (void *) &arr[i][j][k], arr[i][j][k]);
+				printf("arr[%d][%d][%d]/%p = %f\n", i, j, k, (void *) &arr[i][j][k], arr[i][j][k]);
 			}
 		}
 	}
