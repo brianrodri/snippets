@@ -73,10 +73,10 @@ malloc_mdim_arr(size_t * dim_sizes, size_t m, size_t elm_size, size_t elm_align)
 
 		if (cur_dim == (m - 1)) {
 			ptr_to += pad_space;
-			increments = elm_size * dim_sizes[cur_dim];
+			increments = dim_sizes[cur_dim] * elm_size;
 
 		} else {
-			increments = sizeof(void *) * dim_sizes[cur_dim];
+			increments = dim_sizes[cur_dim] * sizeof(void *);
 		}
 
 		while (prod_arr[cur_dim - 1]--) {
