@@ -36,6 +36,10 @@ malloc_mdim_arr(size_t * dim_sizes, size_t m, size_t elm_size, size_t elm_align)
 		return NULL;
 	}
 
+	if (m == 1) {
+		return malloc(dim_sizes[0] * elm_size);
+	}
+
 	size_t ptr_space, pad_space, elm_space, * prod_arr;
 	void ** arr;
 
