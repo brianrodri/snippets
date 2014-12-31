@@ -66,7 +66,7 @@ malloc_mdim_arr(size_t * dim_sizes, size_t m, size_t elm_size, size_t elm_align)
 
 	void ** ptr_at, * ptr_to;
 	ptr_at = arr;
-	ptr_to = (void *) arr + prod_arr[0] * sizeof(void *);
+	ptr_to = (void *) arr + dim_sizes[0] * sizeof(void *);
 
 	for (size_t cur_dim = 1; cur_dim < m; ++cur_dim) {
 		size_t increments;
