@@ -20,7 +20,7 @@ main(int argc, char ** argv)
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 4; j++) {
 			for (int k = 0; k < 8; k++) {
-				arr[i][j][k] = i*j*0.5 - k*j*7.75 + j*i*3.25;
+				arr[i][j][k] = i*j*0.5 - j*k*7.75 + k*i*3.25;
 				printf("arr[%d][%d][%d] = %f\n", i, j, k, arr[i][j][k]);
 			}
 		}
@@ -40,20 +40,19 @@ malloc_mdim_arr(size_t * dim_sizes, size_t m, size_t elm_size, size_t elm_align)
 	size_t ptr_space, pad_space, elm_space, * prod_arr;
 	void ** arr;
 
-	if ((prod_arr = malloc(m * sizeof(size_t))) == NULL) {
+	if ((prod_arr = malloc((m - 1) * sizeof(size_t))) == NULL) {
 		return NULL;
 	}
 
 	ptr_space = 0;
 
 	for (size_t i = 0; i < (m - 1); ++i) {
-		prod_arr[i] = (i) ? (prod_arr[i-1] * dim_sizes[i]) : dim_sizes[i];
+		prod_arr[i] = (i) ? (prod_arr[i - 1] * dim_sizes[i]) : dim_sizes[i];
 		ptr_space += prod_arr[i];
 	}
 
-	prod_arr[m - 1] = prod_arr[m - 2] * dim_sizes[m - 1];
 	ptr_space *= sizeof(void *);
-	elm_space = prod_arr[m - 1] * elm_size;
+	elm_space = prod_arr[m - 2] * dim_sizes[m - 1] * elm_size;
 	pad_space = elm_align - (ptr_space % elm_align);
 	pad_space = (pad_space == elm_align) ? 0 : pad_space;
 
@@ -78,9 +77,8 @@ malloc_mdim_arr(size_t * dim_sizes, size_t m, size_t elm_size, size_t elm_align)
 		}
 
 		while (prod_arr[cur_dim - 1]--) {
-			*ptr_at = ptr_to;
+			*ptr_at++ = ptr_to;
 			ptr_to += increments;
-			ptr_at++;
 		}
 	}
 
