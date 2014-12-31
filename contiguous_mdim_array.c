@@ -40,11 +40,11 @@ malloc_mdim_arr(size_t * dim_sizes, size_t m, size_t elm_size, size_t elm_align)
 	size_t ptr_space, pad_space, elm_space, * prod_arr;
 	void ** arr;
 
-	ptr_space = 0;
-
 	if ((prod_arr = malloc(m * sizeof(size_t))) == NULL) {
 		return NULL;
 	}
+
+	ptr_space = 0;
 
 	for (size_t i = 0; i < (m - 1); ++i) {
 		prod_arr[i] = (i) ? (prod_arr[i-1] * dim_sizes[i]) : dim_sizes[i];
