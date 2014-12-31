@@ -5,8 +5,7 @@
 dimensions. Does not protect against overflow, so be wary of large values of m
 and dimension sizes. Consider using floating m-dimensional arrays for such cases
 instead. Because it is completely contiguous, you free the entire array by
-freeing the returned base pointer. Implementation further below.
-*/
+freeing the returned base pointer. Implementation further below. */
 void * malloc_mdim_arr(size_t * dim_sizes, size_t m, size_t elm_size, size_t elm_align);
 
 
