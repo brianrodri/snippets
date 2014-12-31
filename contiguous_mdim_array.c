@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 /*
-Returns a pointer to a contiguous m-dimensional array w/ the given dimensions.
+Returns a pointer to a jagged, contiguous, m-dimensional array w/ given sizes.
 Does not protect against overflow, so be wary of large values of m and dimension
 sizes. Consider using floating m-dimensional arrays for such cases instead.
 Because it is completely contiguous, you free the entire array by freeing the
