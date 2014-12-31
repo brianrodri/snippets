@@ -76,7 +76,7 @@ malloc_mdim_arr(size_t * dim_sizes, size_t m, size_t elm_size, size_t elm_align)
 		}
 
 		while (prod_arr[cur_dim - 1]--) {
-			*++ptr_at = ptr_to;
+			*ptr_at++ = ptr_to;
 			ptr_to += increments;
 		}
 	}
