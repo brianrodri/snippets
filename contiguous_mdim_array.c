@@ -13,12 +13,12 @@ void * malloc_mdim_arr(size_t * dim_sizes, size_t m, size_t elm_size, size_t elm
 int
 main(int argc, char ** argv)
 {
-	size_t dims[3] = { 3, 4, 8 };
+	size_t dims[3] = { 3, 8, 4 };
 	double *** arr = malloc_mdim_arr(dims, 3, sizeof(double), __alignof__(double));
 
 	for (int i = 0; i < 3; ++i) {
-		for (int j = 0; j < 4; ++j) {
-			for (int k = 0; k < 8; ++k) {
+		for (int j = 0; j < 8; ++j) {
+			for (int k = 0; k < 4; ++k) {
 				arr[i][j][k] = i*j*0.5 - j*k*7.75 + k*i*3.25;
 				printf("arr[%d][%d][%d] = %f\n", i, j, k, arr[i][j][k]);
 			}
@@ -47,10 +47,10 @@ malloc_mdim_arr(size_t * dim_sizes, size_t m, size_t elm_size, size_t elm_align)
 		return NULL;
 	}
 
-	ptr_space = 0;
+	ptr_space = prod_arr[0] = dim_sizes[0];
 
-	for (size_t i = 0; i < (m - 1); ++i) {
-		prod_arr[i] = (i) ? (prod_arr[i - 1] * dim_sizes[i]) : dim_sizes[i];
+	for (size_t i = 1; i < (m - 1); ++i) {
+		prod_arr[i] = prod_arr[i - 1] * dim_sizes[i];
 		ptr_space += prod_arr[i];
 	}
 
