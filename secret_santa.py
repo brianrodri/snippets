@@ -27,7 +27,7 @@ email_details = {
 
 # details sent out to the secret santas
 "Subject" : "Secret Santa 2014~",
-"Message" : '''HO HO HO! This year, you are ${SANTEE}'s Secret Santa! The \
+"Message" : '''HO HO HO! This year, you are {}'s Secret Santa! The \
 spending limit is $50, and we plan on exchanging gifts Christmas night! \
 Have fun and stay sneaky!!''',
 # note: ${SANTEE} will be replaced w/ the santee's name!
@@ -90,7 +90,7 @@ def send_email(santa, santee, server):
 		"To: " + santa_details["Name"] + " <" + santa_details["E-Mail"] + ">",
 		"Subject: " + email_details["Subject"],
 		"",
-		email_details["Message"].replace("${SANTEE}", santee_details["Name"])
+		email_details["Message"].format(santee_details["Name"])
 	])
 
 	server.sendmail("santa@northpole.com", santa_details["E-Mail"], msg)
