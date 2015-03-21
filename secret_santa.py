@@ -51,12 +51,12 @@ bad_pairs = {
 
 
 def bijections_of(elements, relations):
-    mapping = collections.defaultdict(list)
+    mapping = collections.defaultdict(set)
     bijections = []
 
     for lhs, rhs in relations:
         if {lhs, rhs} <= elements:
-            mapping[lhs].append(rhs)
+            mapping[lhs].add(rhs)
         else:
             break;
     else:
