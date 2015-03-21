@@ -15,6 +15,7 @@
         Run with -h/--help flag to see usage details
 """
 
+
 import argparse
 import collections
 import itertools
@@ -52,20 +53,17 @@ bad_pairs = {
 
 def bijections_of(elements, relations):
     mapping = collections.defaultdict(set)
-    bijections = []
 
     for lhs, rhs in relations:
-        if {lhs, rhs} <= elements:
+        if elements >= {lhs, rhs}:
             mapping[lhs].add(rhs)
-        else:
-            break;
-    else:
-        if len(mapping.keys()) == len(elements):
-            bijections = [ zip(mapping.keys(), permutation)
-                for permutation in itertools.product(*mapping.values())
-                if len(set(permutation)) == len(elements) ]
 
-    return bijections
+    if len(mapping.keys()) == len(elements):
+        return [ list(zip(mapping.keys(), permutation))
+            for permutation in itertools.product(*mapping.values())
+            if len(set(permutation)) == len(elements) ]
+
+    return None
 
 def send_email(sa, se, server):
     sa, se = santdb[sa], santdb[se]
